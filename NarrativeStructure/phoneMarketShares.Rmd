@@ -1,0 +1,41 @@
+---
+title: "Mini-project 2"
+author: "Li Wang"
+date: "3/9/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(ggplot2)
+library(ggplot2)
+
+```
+
+
+```{r}
+phoneMkt <- read.csv('phoneMarketShares.csv')
+phoneMkt <- phoneMkt[order(phoneMkt$phoneMarketShares), ]
+
+dim(phoneMkt)
+head(phoneMkt)
+
+```
+
+```{r}
+str(phoneMkt)
+```
+
+
+```{r}
+ggplot(phoneMkt, aes(reorder(Company, Market_shares), Market_shares)) + geom_bar(stat = "identity", fill='#FFC300') + ggtitle('U.S. Smart Phone Market Shares Comparision') + xlab('Smart Phone Companies') + ylab('Market Shares in %') 
+   
+ggsave('phoneMarketShares.png')
+```
+
+```{r}
+ggplot(aes(Company, Market_Shares), phoneMkt) + + geom_bar(stat = "identity", fill='#FFC300') + ggtitle('U.S. Smart Phone Market Shares Comparision') + xlab('Smart Phone Companies') + ylab('Market Shares in %') 
+   
+ggsave('phoneMarketShares.png')
+```
+
+

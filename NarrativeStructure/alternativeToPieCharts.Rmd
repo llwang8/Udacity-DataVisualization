@@ -1,0 +1,114 @@
+---
+title: "Alternatives to Pie Chart"
+author: "Li Wang"
+date: "3/10/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+install.packages("readr")
+```
+
+```{r}
+library(readr)
+
+d <- read_csv("Task,< 1 a week,1-4 a week,1-3 a day,>4 a day
+Basic exploratory data analysis,11,32,46,12
+Data cleaning,19,42,31,7
+Machine learning/statistics,34,29,27,10
+Creating visualizations,23,41,29,7
+Presenting analysis,27,47,20,6
+Extract/transform/load,43,32,20,5")
+
+# reorganize
+library(tidyr)
+d <- gather(d, Hours, Percentage, -Task)
+
+dim(d)
+str(d)
+```
+
+Alternative Graph I:
+```{r}
+library(ggplot2)
+theme_set(theme_bw())
+
+ggplot(d, aes(Hours, Percentage)) + geom_bar(stat = "identity") + facet_wrap(~Task)
+```
+
+Improved version of Graph I:
+```{r}
+library(dplyr)
+
+d %>%
+  mutate(Task = reorder(Task, Percentage, function(e) e[1])) %>%
+  ggplot(aes(Hours, Percentage)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Task) +
+  geom_text(aes(label = paste0(Percentage, "%"), y = Percentage),
+            vjust = 1.4, size = 5, color = "white") +
+  theme(axis.text.x = element_text(angle = 90,  hjust = 1)) +
+  xlab("Hours spent per week")
+```
+
+Edward Tufte’s approach of maximizing the “Data/Ink Ratio”- that is, dropping borders, grids, and axis lines. This can be achieved with theme_tufte:
+```{r}
+library(dplyr)
+library(ggthemes)
+
+d %>%
+  mutate(Task = reorder(Task, Percentage, function(e) e[1])) %>%
+  ggplot(aes(Hours, Percentage)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Task) +
+  geom_text(aes(label = paste0(Percentage, "%"), y = Percentage),
+            vjust = 1.4, size = 5, color = "white") +
+  theme_tufte() +
+  theme(axis.text.x = element_text(angle = 90,  hjust = 1))
+```
+
+Alternative graph II:
+```{r}
+ggplot(d, aes(Hours, Percentage, color = Task, group = Task)) +
+  geom_line()
+```
+
+Alternative graph III:
+```{r}
+ggplot(d, aes(Hours, Task, fill = Percentage)) +
+  geom_tile(show.legend = FALSE) +
+  geom_text(aes(label = paste0(Percentage, "%")), color = "white")
+```
+
+```{r}
+# The easiest way to get readr is to install the whole tidyverse:
+install.packages("tidyverse")
+
+# Alternatively, install just readr:
+
+install.packages("readr")
+
+library(tidyverse)
+```
+
+```{r}
+phone <- read.csv('phoneMarketShares.csv', sep=',', header = TRUE)
+phone <- phone[order(phone$Market_Shares), ]
+```
+
+```{r}
+ ggplot(aes(Company, Market_Shares), phone) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(Market_Shares, "%"), y = Market_Shares),
+            vjust = 1.4, size = 5, color = "white") +
+  theme(axis.text.x = element_text(angle = 90,  hjust = 1)) +
+  xlab("Market Shares") + ggtitle("U.S. Smart Phone Market Shares")
+
+ggsave('phoneMktShares.png')
+```
+
+

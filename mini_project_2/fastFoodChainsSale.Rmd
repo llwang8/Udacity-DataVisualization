@@ -1,0 +1,35 @@
+---
+title: "Mini-project 2"
+author: "Li Wang"
+date: "3/9/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(ggplot2)
+library(ggplot2)
+
+```
+
+
+```{r}
+ff <- read.csv('fastFoodChainsSales.csv', sep=',', header = TRUE)
+ff <- ff[order(ff$Sales_in_Billions), ]
+
+dim(ff)
+head(ff)
+```
+
+```{r}
+str(ff)
+```
+
+
+```{r}
+ggplot(ff, aes(reorder(Fast_Food_Chains, Sales_in_Billions), Sales_in_Billions)) + geom_bar(stat = "identity", fill='#FFC300') + ggtitle('Fast Food Chains Sales Comparison') + xlab('Fast Food Chains') + ylab('Sales in Billions') 
+   
+ggsave('fastFoodChainsSales_bar.png')
+```
+
+
+
